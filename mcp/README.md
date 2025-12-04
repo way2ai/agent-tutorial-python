@@ -145,5 +145,6 @@ MCP 还定义了客户端可以暴露的基本元素：
 ~~~
 
 TODO: 
+https://modelcontextprotocol.io/docs/learn/architecture#understanding-the-tool-execution-response
 1.~~~标签中增加响应示例
 2.补充参数说明
