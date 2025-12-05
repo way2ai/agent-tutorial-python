@@ -8,12 +8,13 @@ Docstring for mcp.mcp_server_demo
 构建一个服务器，该服务器将暴露两个工具： get_alerts 和 get_forecast 。
 然后我们将该服务器连接到一个 MCP 主机（Cherry Studio）
 
-方案：
-# 1.创建 conda 环境 mcp (推荐使用miniconda)
+方案：使用 FastMCP 来快速构建 MCP 服务器
+# 1.创建环境并安装依赖（参考：https://github.com/zh4ngyj/my-docs/blob/main/miniconda/README.md）
+# 1.1.创建 conda 环境 mcp (推荐使用miniconda)
 ~~~bash
 conda create -n mcp python=3.10 -y
 ~~~bash
-# 2.安装 uv
+# 1.2.安装 uv
 ~~~bash
 # 方法A: (推荐) 系统级安装，此时 uv 会自动检测当前激活的 conda 环境
 # Windows: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -22,21 +23,26 @@ conda create -n mcp python=3.10 -y
 # 方法B: 在当前 conda 环境里装
 pip install uv
 ~~~
-# 3.进入 mcp 目录
+# 1.3.进入 mcp 目录
 ~~~bash
 cd path/to/mcp
 ~~~
-# 4.安装 mcp 相关包
+# 1.4.安装 mcp 相关包
 ~~~bash
 uv pip install mcp[cli] httpx
 ~~~
-# 5.编写代码 mcp/mcp_server_demo.py
-# 6.运行 MCP 服务器 demo
+# 2.编写代码 mcp/mcp_server_demo.py
+# 3.运行 MCP 服务器 demo
 
 验证：
 1.运行 cherry-studio 桌面版
 2.注册 MCP Server 到 cherry-studio
+类型 (Type): Stdio
+名称 (Name): WeatherServer
+命令 (Command): path/to/miniconda3/envs/mcp/python.exe
+参数 (Arguments): path/to/mcp_server_demo.py
 3.通过 cherry-studio 进行测试 MCP Server
+选择一个支持工具调用的模型,添加 WeatherServer 到工具中，直接用自然语言提问，模型会自动决定调用哪个工具。
 """
 from typing import Any
 import httpx
@@ -56,17 +62,6 @@ KEY = "e82e58358bcc83fb54c5c4b86f52530b"
 EXTENSIONS = ("base", "all")
 OUTPUT =("JSON", "XML")
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-
-'''
-高德地图API地址：
-
-地理/逆地理编码:
-https://restapi.amap.com/v3/geocode/geo?
-address=北京市朝阳区阜通东大街6号&key=<用户的key>
-
-天气查询:
-https://restapi.amap.com/v3/weather/weatherInfo?city=110101&key=<用户key>
-'''
 
 @mcp.tool()
 async def get_adcode(address: str) -> int:
@@ -197,6 +192,12 @@ def format_forecast(forecast: dict) -> str:
 def main():
     # Initialize and run the MCP server
     mcp.run(transport="stdio")
+
+    # Initialize and run the MCP server by SSE (http://127.0.0.1:8000/sse)
+    # mcp.run(transport="sse")
+
+    # Initialize and run the MCP server by StreamableHttp (http://127.0.0.1:8000/mcp)
+    # mcp.run(transport="streamable-http")
 
 if __name__ == "__main__":
     logger.info("Starting MCP Weather Server...")
