@@ -29,6 +29,10 @@ cd path/to/mcp
 ~~~
 # 1.4.安装 mcp 相关包
 ~~~bash
+# 激活 conda 环境
+conda activate mcp
+
+# 使用 pip 安装 mcp 及其 cli 依赖
 uv pip install mcp[cli] httpx
 ~~~
 # 2.编写代码 mcp/mcp_server_demo.py
