@@ -1,6 +1,7 @@
 from langchain_mcp_adapters.tools import load_mcp_tools
 from langchain.agents import create_agent
 
+# 创建模型
 from langchain_openai import ChatOpenAI
 openai_model = ChatOpenAI(
     model="Qwen/Qwen3-32B",
@@ -9,6 +10,7 @@ openai_model = ChatOpenAI(
     base_url="https://api.siliconflow.cn/v1"
 )
 
+# 创建mcp-client
 from langchain_mcp_adapters.client import MultiServerMCPClient 
 client = MultiServerMCPClient(  
     {
@@ -20,8 +22,6 @@ client = MultiServerMCPClient(
 )
 
 async def main():
-
-    system_prompt = "你是一个乐于助人的助手，擅长使用提供的工具解决问题，回答要简洁明了。"
 
     # 加载工具
     tools = await client.get_tools()  
@@ -37,7 +37,7 @@ async def main():
     try:
         excel_response = await agent.ainvoke(
             {"messages": [
-                    {"role": "system", "content": system_prompt},
+                    {"role": "system", "content": "你是一个乐于助人的助手，擅长使用提供的工具解决问题，回答要简洁明了。"},
                     {"role": "user", "content": "创建一个excel：文件名称为“test”，内容为[['name','age'],['Bob','20'],['张三','23']]"}
                 ]}
         )
