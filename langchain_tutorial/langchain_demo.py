@@ -4,7 +4,7 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 openai_model = ChatOpenAI(
     model="Qwen/Qwen3-32B",
-    api_key="sk-zhretbftokbdkvvyoshzxpvzkbvfrkumcuoqkopfswpwuhja",
+    api_key="sk-xxx",
     temperature=0.1,
     base_url="https://api.siliconflow.cn/v1"
 )
