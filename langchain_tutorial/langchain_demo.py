@@ -4,9 +4,8 @@ from langchain.agents import create_agent
 # 创建模型
 from langchain_openai import ChatOpenAI
 openai_model = ChatOpenAI(
-    model="Qwen/Qwen3-32B",
+    model="Qwen/Qwen3-14B",
     api_key="sk-xxx",
-    temperature=0.1,
     base_url="https://api.siliconflow.cn/v1"
 )
 
@@ -14,7 +13,7 @@ openai_model = ChatOpenAI(
 from langchain_mcp_adapters.client import MultiServerMCPClient 
 client = MultiServerMCPClient(  
     {
-        "excel": {
+        "weather": {
             "transport": "streamable_http",
             "url": "http://localhost:8000/mcp",
         }
@@ -35,15 +34,50 @@ async def main():
 
     # 调用工具
     try:
+        print("开始调用工具...")
         result = await agent.ainvoke(
             {"messages": [
                     {"role": "system", "content": "你是一个乐于助人的助手，擅长使用提供的工具解决问题，回答要简洁明了。"},
-                    {"role": "user", "content": "创建一个excel：文件名称为“test”，内容为[['name','age'],['Bob','20'],['张三','23']]"}
+                    {"role": "user", "content": "成都明天应该穿什么衣服？"}
                 ]}
         )
-        print("完整返回结果:", result)
+        pretty_print_result(result)
     except Exception as e:
         print(f"工具调用失败: {e}")
+
+def pretty_print_result(result: dict) -> None:
+    """友好展示 agent 返回结果。"""
+    messages = result.get("messages", [])
+    final_answer = None
+    tool_steps: list[str] = []
+
+    for msg in messages:
+        msg_type = getattr(msg, "type", None) or msg.__class__.__name__
+        if msg_type == "ai":
+            content = getattr(msg, "content", None)
+            if content:
+                final_answer = content
+        elif msg_type == "tool":
+            tool_name = getattr(msg, "name", "tool")
+            content = getattr(msg, "content", None)
+            if isinstance(content, list):
+                content_text = "\n".join(
+                    item.get("text", "") for item in content if isinstance(item, dict)
+                ).strip()
+            else:
+                content_text = str(content).strip() if content is not None else ""
+            if content_text:
+                tool_steps.append(f"[{tool_name}] {content_text}")
+
+    print("\n===== 工具调用结果 =====")
+    if tool_steps:
+        for step in tool_steps:
+            print(step)
+    else:
+        print("(无工具输出)")
+
+    print("\n===== 最终回答 =====")
+    print(final_answer or "(无最终回答)")
 
 if __name__ == "__main__":
     import asyncio

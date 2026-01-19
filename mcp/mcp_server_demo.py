@@ -195,13 +195,13 @@ def format_forecast(forecast: dict) -> str:
 
 def main():
     # Initialize and run the MCP server
-    mcp.run(transport="stdio")
+    # mcp.run(transport="stdio")
 
     # Initialize and run the MCP server by SSE (http://127.0.0.1:8000/sse)
     # mcp.run(transport="sse")
 
     # Initialize and run the MCP server by StreamableHttp (http://127.0.0.1:8000/mcp)
-    # mcp.run(transport="streamable-http")
+    mcp.run(transport="streamable-http")
 
 if __name__ == "__main__":
     logger.info("Starting MCP Weather Server...")
