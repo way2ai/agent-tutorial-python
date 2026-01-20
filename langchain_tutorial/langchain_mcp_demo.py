@@ -11,7 +11,7 @@ openai_model = ChatOpenAI(
 
 # 创建mcp-client
 from langchain_mcp_adapters.client import MultiServerMCPClient 
-client = MultiServerMCPClient(  
+client = MultiServerMCPClient(
     {
         "weather": {
             "transport": "streamable_http",
@@ -35,13 +35,21 @@ async def main():
     # 调用工具
     try:
         print("开始调用工具...")
-        result = await agent.ainvoke(
-            {"messages": [
-                    {"role": "system", "content": "你是一个乐于助人的助手，擅长使用提供的工具解决问题，回答要简洁明了。"},
-                    {"role": "user", "content": "成都明天应该穿什么衣服？"}
-                ]}
-        )
-        pretty_print_result(result)
+        payload = {"messages": [
+                {"role": "system", "content": "你是一个乐于助人的助手，擅长使用提供的工具解决问题，回答要简洁明了。"},
+                {"role": "user", "content": "创建一个测试excel"}
+            ]}
+        
+        tasks = [
+             agent.ainvoke(payload) for i in range(1, 10 + 1)
+        ]
+        results =  await asyncio.gather(*tasks, return_exceptions=True)
+        print(results)
+        # result = await agent.ainvoke(payload)
+        # result2 = await agent.ainvoke(payload)
+        # pretty_print_result(result)
+        # print("\n\n--- 第二次调用 ---\n\n")
+        # pretty_print_result(result2)
     except Exception as e:
         print(f"工具调用失败: {e}")
 
