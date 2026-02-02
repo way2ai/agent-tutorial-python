@@ -23,10 +23,10 @@ vector_store = Chroma.from_documents(
 
 # 3. 检索 (Retrieval)
 query = "哪些水果有营养？"
-retriever = vector_store.as_retriever(search_kwargs={"k": 2}) # 取前2个相关
-results = retriever.invoke(query)
+results = vector_store.similarity_search_with_relevance_scores(query, k=2)
 
-print("--- 检索结果 ---")
-for doc in results:
+print("--- 检索结果(含得分) ---")
+for doc, score in results:
+    print(f"score: {score}")
     print(doc.page_content)
     print(doc.metadata)
