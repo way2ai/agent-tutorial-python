@@ -5,7 +5,7 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 openai_model = ChatOpenAI(
     model="Qwen/Qwen3-14B",
-    api_key="sk-xxx",
+    api_key="sk-zsajewmdqohlpuoahgkqbvrjjgzoewatgioabipfbiwscoug",
     base_url="https://api.siliconflow.cn/v1"
 )
 
@@ -37,7 +37,7 @@ async def main():
         print("开始调用工具...")
         payload = {"messages": [
                 {"role": "system", "content": "你是一个乐于助人的助手，擅长使用提供的工具解决问题，回答要简洁明了。"},
-                {"role": "user", "content": "创建一个测试excel"}
+                {"role": "user", "content": "查询成都的天气"}
             ]}
         
         tasks = [
