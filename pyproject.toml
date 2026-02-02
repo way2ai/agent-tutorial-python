@@ -16,3 +16,8 @@ dependencies = [
     "semantic-kernel>=1.36.0",
     "langchain-chroma>=1.1.0",
 ]
+
+[[tool.uv.index]]
+name = "pypi-cn"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
